@@ -1,0 +1,13 @@
+USARTDIV = Fck/baudrate * 16
+
+USARTDIV = 8000 000/115 384 * 16 = 4,3=> 4.5/16
+mantissa = 4 	=>0b0000 0100
+fraction = 5/16 =>0b0101
+		  0b0000 0100 0101 => 0x45
+Baud Rate = 0d115 384 = 0x45
+
+USARTDIV = 8000 000/9600 * 16 = => 52.08 =>52.2/16
+mantissa = 52 	=>0b0011 0100
+fraction = 2/16 =>0b0010
+		  0b0011 0100 0010 => 0x342
+Baud Rate = 0d9600 = 0x0x342
