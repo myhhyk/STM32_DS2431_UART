@@ -20,6 +20,10 @@ void setupPORTC(void){
 	GPIOC->CRH		|=	 (2<<20);//mode output 2mHz
 	GPIOC->CRH 		&=	~(3<<22);//cnf  push/pull
 }
+void setupUSART1(void){
+	RCC->APB2ENR 	|=	(1<<USART1EN);	//USART1 EN
+
+}
 
 
 
