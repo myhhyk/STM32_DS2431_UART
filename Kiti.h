@@ -1,13 +1,15 @@
 /*
  * Kiti.h
  *
- *  Created on: 16 июн. 2020 г.
- *      Author: myhhuk
+ *  Created on: 25 июн. 2020 г.
+ *      Author: engineer01
  */
 
-#ifndef INC_KITI_H_
-#define INC_KITI_H_
+#ifndef SRC_KITI_H_
+#define SRC_KITI_H_
 
+#include "stm32f103xb.h"
+#include "main.h"
 #define DMA1_Channel1_IT_Mask ((uint32_t)(15<<0))
 #define DMA1_Channel2_IT_Mask ((uint32_t)(15<<4))
 #define DMA1_Channel3_IT_Mask ((uint32_t)(15<<8))
@@ -63,8 +65,7 @@
 
 #define	DMA_CCR1_EN	(1<<0)
 
-
-void DMA_Init(DMA_Channel_TypeDef Channel, uint16_t Size, uint32_t Perif, uint32_t Mem, uint16_t Conf){
+void DMA_Init(DMA_Channel_TypeDef* Channel, uint16_t Size, uint32_t Perif, uint32_t Mem, uint16_t Conf){
 uint32_t tmp  = 0;
 
 	tmp = 	Channel->CCR;
@@ -76,7 +77,6 @@ uint32_t tmp  = 0;
 	Channel->CMAR	=	Mem;
 	Channel->CCR	=	Conf;
 }
-
 void DMA_DeInit(DMA_Channel_TypeDef* Channel){
 
 	Channel->CCR	&=	(uint16_t)(~DMA_CCR1_EN);
@@ -103,23 +103,28 @@ void DMA_DeInit(DMA_Channel_TypeDef* Channel){
 	}
 }
 
+void DMA_Enable(DMA_Channel_TypeDef* Channel){
+	Channel->CCR 	|=	DMA_CCR1_EN;
+}
+
+void DMA_Disable(DMA_Channel_TypeDef* Channel){
+	Channel->CCR	&=	(uint16_t)(~DMA_CCR1_EN);
+}
 
 void setupRCC(void){
-	RCC->CR			|=	(16<<3);//HSITRIM = 16
-	RCC->CR			|= 	(1<<0);//HSI on
+	RCC->CR 		|=	(16<<3);	 	//TRIM = 16
+	RCC->CR 		|=	(1<<0);			//HSION
+	while(!(RCC->CR & (1<<1)));			//wait HSIRDY
+	RCC->CFGR		|=	(5<<MCO);		//HSI selected
+}
 
-	RCC->CFGR		|=	(5<<24);//MCO HSI sel
-	RCC->APB2ENR	|=	(1<<4);//IOPC
-}
-void setupPORTC(void){
-	GPIOC->CRH		&=	~(15<<20);//0b0000<<20
-	GPIOC->CRH		|=	 (2<<20);//mode output 2mHz
-	GPIOC->CRH 		&=	~(3<<22);//cnf  push/pull
-}
 void setupUSART1(void){
 	RCC->APB2ENR 	|=	(1<<USART1EN);	//USART1 EN
+
 }
 
 
 
-#endif /* INC_KITI_H_ */
+
+#endif /* SRC_KITI_H_ */
+
